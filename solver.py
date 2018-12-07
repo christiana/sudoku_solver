@@ -40,9 +40,9 @@ suv(9,9, 3);
 
 #grid.print_self()
 print("-"*50)
-print("candidates :")
-grid.print_candidates()
-print("found:")
+#print("candidates :")
+#grid.print_candidates()
+print("initial condition:")
 grid.print_found()
 grid.print_statistics()
 print("-"*50)
@@ -57,10 +57,10 @@ while True:
     grid.print_statistics()
     print("apply_rule: sole_candidate_in_unit_clears_others...")
     rules.apply_rule_sole_candidate_in_unit_clears_others(grid)
-    print("-"*50)
-    print('Iteration %i done' % iteration_count)
     grid.print_statistics()
+    print('Iteration %i done' % iteration_count)
     print("-"*50)
+    print("")
     
     if candidates_pre == grid.get_candidate_count():
         break
