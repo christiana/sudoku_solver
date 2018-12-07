@@ -53,7 +53,8 @@ while True:
     iteration_count = iteration_count + 1
 
     print("apply_rule: one_number_per_unit...")
-    rules.apply_rule_one_number_per_unit(grid)
+    #rules.apply_rule_one_number_per_unit(grid)
+    rules.apply_rule_one_number_per_unit_one_pass(grid)
     grid.print_statistics()
     print("apply_rule: sole_candidate_in_unit_clears_others...")
     rules.apply_rule_sole_candidate_in_unit_clears_others(grid)

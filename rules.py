@@ -113,4 +113,11 @@ def apply_rule_sole_candidate_in_unit_clears_others(grid):
             unit(parser.effectuate)
         
 
+def apply_rule_all_instances_in_unit_on_one_line_clears_rest_of_line(grid):
+    '''
+    RULE:
+    - when a candidate appears only once in a unit, that candidate must be the match.
+    - unit can be row, column, box
+    '''
+    pass
 
