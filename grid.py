@@ -78,6 +78,26 @@ class Grid:
         bind = lambda r,c : foo(self, r, c)
         self._print_grid(bind, element_width=9, spacing=5)
         
+    def get_found_count(self):
+        count = 0
+        for r in range(9):
+            for c in range(9):
+                if self.get_value(r, c):
+                    count = count + 1 
+        return count
+    
+    def get_candidate_count(self):
+        count = 0
+        for r in range(9):
+            for c in range(9):
+                count = count + len(self.get_candidates(r, c))
+        return count
+        
+    def print_statistics(self):
+        found = self.get_found_count()
+        candidates = self.get_candidate_count()
+        print('found: %s/%s. candidates: %s/%s' % (found, 81, candidates, 81*9))
+        
     def remove_candidate(self, r, c, val):
         n = val-1
         modified = self.values[r][c][n] == 1 

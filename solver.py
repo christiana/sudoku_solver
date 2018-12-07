@@ -39,18 +39,36 @@ suv(9,7, 6);
 suv(9,9, 3);
 
 #grid.print_self()
+print("-"*50)
+print("candidates :")
+grid.print_candidates()
+print("found:")
+grid.print_found()
+grid.print_statistics()
+print("-"*50)
+iteration_count = 0
+
+while True:
+    candidates_pre = grid.get_candidate_count()
+    iteration_count = iteration_count + 1
+
+    print("apply_rule: one_number_per_unit...")
+    rules.apply_rule_one_number_per_unit(grid)
+    grid.print_statistics()
+    print("apply_rule: sole_candidate_in_unit_clears_others...")
+    rules.apply_rule_sole_candidate_in_unit_clears_others(grid)
+    print("-"*50)
+    print('Iteration %i done' % iteration_count)
+    grid.print_statistics()
+    print("-"*50)
+    
+    if candidates_pre == grid.get_candidate_count():
+        break
+
+print("-"*50)
 print("candidates:")
 grid.print_candidates()
 print("found:")
 grid.print_found()
-
-print("apply_rule_one_number_per_unit...")
-rules.apply_rule_one_number_per_unit(grid)
-print("apply_rule_sole_candidate_in_unit_clears_others...")
-rules.apply_rule_sole_candidate_in_unit_clears_others(grid)
-
-print("candidates:")
-grid.print_candidates()
-print("found:")
-grid.print_found()
+print("-"*50)
 
