@@ -215,8 +215,79 @@ def apply_rule_tuple_candidates_repeated_n_times_contain_no_other_candidates(gri
     '''
     RULE:
     - when an n--sub-tuple of candidates appears exactly n times in 
-      a box, only these candidates can be present in those locations.
+      a box, and those candidates appears nowhere else in that box, 
+      only these candidates can be present in those locations.
     - Remove the other candidates from those locations.
     '''
-    pass
+    class Parser:
+        '''
+        applies to boxes.
+        '''
+        def __init__(self, grid):
+            self.grid = grid
+            self.rb = None
+            self.cb = None
+            self.pairs = {} # number of appearances of each single candidate in box
+            self.singles = {} # number of appearances of each pair in box
+            self.found_pair = None
+        def investigate(self, r, c):
+            ''
+            self.rb = r/3
+            self.cb = c/3
+            candidates = self.grid.get_candidates(r,c)
+            self.add_singles(self.singles, candidates)
+            self.add_pairs(self.pairs, candidates)                            
+        def calculate(self):
+            for key,val in self.pairs.iteritems():
+                #print("---")
+                #print("pairs", self.pairs)
+                #print("singles", self.singles)
+                #print("key: ", key)
+                n0 = self.singles[key[0]]
+                n1 = self.singles[key[1]]
+                # if a pair occurs twice, and both numbers appears only in the pair
+                if (val==2) and (n0==2) and (n1==2):
+#                    self.enforce_unique_pair(key)
+                    self.found_pair = key
+                    #print("--- Found pair (%s) in box=(%i,%i)" % (str(key), self.rb, self.cb))
+                    return # let the next iteration deal with the others.
+                
+        def effectuate(self, r, c):
+            f = self.found_pair
+            if f is None:
+                return
+            candidates = self.grid.get_candidates(r,c)
+            if (f[0] in candidates) and (f[1] in candidates):
+                for cc in candidates:
+                    if cc not in f:
+                        grid.remove_candidate(r, c, cc)
+                
+#        def enforce_unique_pair(self, pair):
+#            print("--- Found pair (%s) in box=(%i,%i)" % (str(pair), self.rb, self.cb))
+            
+        def add_singles(self, singles, candidates):
+            for c in candidates:
+                if c not in singles:
+                    singles[c] = 0
+                singles[c] = singles[c] +1
+        def add_pairs(self, pairs, candidates):
+            if len(candidates)<2:
+                return
+            #print("candidates", candidates)
+            for c in candidates[1:-1]:
+                new_pair = (candidates[0], c)
+                if new_pair not in pairs:
+                    pairs[new_pair] = 0
+                pairs[new_pair] = pairs[new_pair] + 1
+            self.add_pairs(pairs, candidates[1:-1])
+                
+    
+    boxes = generate_list_visiting_all_boxes()
+
+    for val in range(1,10):
+        for box in boxes:
+            parser = Parser(grid)
+            box(parser.investigate)
+            parser.calculate()
+            box(parser.effectuate)
 
