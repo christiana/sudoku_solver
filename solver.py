@@ -4,11 +4,7 @@ import numpy as np
 from grid import Grid
 import rules
 
-print("hello sudokus")
 grid = Grid()
-#grid.set_user_value(0,2, 4)
-#grid.set_user_value(4,4, 6)
-#grid.set_user_value(6,5, 3)
 
 suv = grid.set_user_value
 
@@ -58,6 +54,9 @@ while True:
     grid.print_statistics()
     print("apply_rule: sole_candidate_in_unit_clears_others...")
     rules.apply_rule_sole_candidate_in_unit_clears_others(grid)
+    grid.print_statistics()
+    print("apply_rule: all_instances_in_box_on_one_line_clears_rest_of_line...")
+    rules.apply_rule_all_instances_in_box_on_one_line_clears_rest_of_line(grid)
     grid.print_statistics()
     print('Iteration %i done' % iteration_count)
     print("-"*50)

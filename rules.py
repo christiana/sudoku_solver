@@ -16,6 +16,16 @@ def visit_box(rb, cb, visitor):
     for rr in range(rb, rb+3):        
         for cc in range(cb, cb+3):
             visitor(rr, cc)
+
+def generate_list_visiting_all_boxes():
+    '''
+    generate a list of all lambdas, one for each box.
+    '''
+    units = []
+    for rr in range(3):
+        for cc in range(3):
+            units.append(lambda p, rr=rr, cc=cc: visit_box(rr, cc, p))
+    return units
             
 def generate_list_visiting_all_units():
     '''
@@ -113,11 +123,107 @@ def apply_rule_sole_candidate_in_unit_clears_others(grid):
             unit(parser.effectuate)
         
 
-def apply_rule_all_instances_in_unit_on_one_line_clears_rest_of_line(grid):
+def apply_rule_all_instances_in_box_on_one_line_clears_rest_of_line(grid):
     '''
     RULE:
-    - when a candidate appears only once in a unit, that candidate must be the match.
-    - unit can be row, column, box
+    - when all instances of a number in a box appears on 
+      the same line (row or col), that number must be present
+      in that box in that line.
+    - Remove that number from the rest of the line.
+      
+      
+      for all numbers
+        for all boxes
+          for rows and counts (ie line)
+            count #number for each line in box
+            if zero on 2, it must be on the last one
+            clear number from rest of line.
+    '''
+    class Parser:
+        '''
+        applies to boxes.
+        - investigate(r,c) called on each location the given box.
+        - effectuate() implements all the effects from this box
+        '''
+        def __init__(self, grid, val):
+            self.grid = grid
+            self.val = val
+            self.mod = False
+            self.row_count = [0]*3
+            self.col_count = [0]*3
+            self.rb = None
+            self.cb = None
+        def investigate(self, r, c):
+            ''
+            #print('investigate (%i, %i) val=%i' % (r, c, self.val))
+            self.rb = r/3
+            self.cb = c/3
+            rr = r%3
+            cc = c%3
+            candidates = grid.get_candidates(r,c)
+            if self.val in candidates:
+                self.row_count[rr] = self.row_count[rr] + 1
+                self.col_count[cc] = self.col_count[cc] + 1
+                            
+        def effectuate(self):
+            self._effectuate_cols()
+            self._effectuate_rows()
+                            
+        def _get_line_of_number(self, lines):
+            ''
+            if lines.count(0) != 2:
+                return None # no single line with all the hits, -> fail
+            for counter, line in enumerate(lines):
+                if line>1:
+                    return counter
+            return None
+   
+        def _effectuate_rows(self):
+            ''
+            #print("   ** check box=(%i,%i) val=%i row rc=%s" % (self.rb,self.cb,self.val,self.row_count) )
+            if sum(self.row_count)==1:
+                return # optimalization: already specified
+            rr = self._get_line_of_number(self.row_count)
+            if rr is not None:
+                #print("!!!!!!!!! found box=(%i,%i) val=%i row rr=%i rc=%s" % (self.rb,self.cb,self.val,rr,self.row_count) )
+                # found! clear rest of row
+                # clear number from row r=rr+self.rb*3
+                r = rr + self.rb*3
+                for c in range(9):
+                    if c/3 != self.cb:
+                        grid.remove_candidate(r,c,self.val)
+
+        def _effectuate_cols(self):
+            ''
+            if sum(self.col_count)==1:
+                return # optimalization: already specified
+            cc = self._get_line_of_number(self.col_count)
+            if cc is not None:
+                #print("!!!!!!!!! found box=(%i,%i) val=%i col cc=%i cc=%s" % (self.rb,self.cb,self.val,cc,self.col_count) )
+                # found! clear rest of row
+                # clear number from row r=rr+self.rb*3
+                c = cc + self.cb*3
+                for r in range(9):
+                    if r/3 != self.rb:
+                        grid.remove_candidate(r,c,self.val)
+ 
+    
+    
+    boxes = generate_list_visiting_all_boxes()
+
+    for val in range(1,10):
+#    for val in range(9,10):
+        for box in boxes:
+            parser = Parser(grid, val)
+            box(parser.investigate)
+            parser.effectuate()
+
+def apply_rule_tuple_candidates_repeated_n_times_contain_no_other_candidates(grid):
+    '''
+    RULE:
+    - when an n--sub-tuple of candidates appears exactly n times in 
+      a box, only these candidates can be present in those locations.
+    - Remove the other candidates from those locations.
     '''
     pass
 
