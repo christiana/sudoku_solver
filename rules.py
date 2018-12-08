@@ -65,7 +65,7 @@ def strip_candidates_from_exact_value(grid, r, c, val):
     visit_box(r/3, c/3, stripper.visit);
     return stripper.mod
     
-def apply_rule_one_number_per_unit_one_pass(grid):
+def apply_rule_one_number_per_unit(grid):
     '''
     RULE:
     - one number occurs once per unit
@@ -79,12 +79,6 @@ def apply_rule_one_number_per_unit_one_pass(grid):
                 # an exact value found: remove from row
                 modified = strip_candidates_from_exact_value(grid, r, c, val) or modified
     return modified
-
-def apply_rule_one_number_per_unit(grid):
-    ''
-    while apply_rule_one_number_per_unit_one_pass(grid):
-        #print("  apply_rule_one_number_per_unit_one_pass...")
-        pass
 
 def apply_rule_sole_candidate_in_unit_clears_others(grid):
     '''
@@ -212,7 +206,6 @@ def apply_rule_all_instances_in_box_on_one_line_clears_rest_of_line(grid):
     boxes = generate_list_visiting_all_boxes()
 
     for val in range(1,10):
-#    for val in range(9,10):
         for box in boxes:
             parser = Parser(grid, val)
             box(parser.investigate)

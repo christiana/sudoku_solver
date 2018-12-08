@@ -45,7 +45,6 @@ class Grid:
         return found
     
     def _print_grid(self, element_printer, element_width=1, spacing=1):
-        width = 3*(5+3*element_width)+1 + spacing*12
         width = 9*element_width + spacing*12 + 4
         for r in range(9):
             if (r%3==0):
@@ -70,10 +69,8 @@ class Grid:
 
     def print_candidates(self):
         def foo(self, r, c):
-#            found = self.get_candidates(r,c)
             val = [str(n+1) if self.values[r][c][n]==1 else ' ' for n in range(9)]
             val = ''.join(val);
-#            val = ''.join([str(n) for n in found]);
             return '%9s' % val
         bind = lambda r,c : foo(self, r, c)
         self._print_grid(bind, element_width=9, spacing=5)
