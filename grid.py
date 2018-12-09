@@ -101,3 +101,41 @@ class Grid:
         self.values[r][c][n] = 0
         return modified
 
+def load_grid(data):
+    '''
+    Generate a grid based on text input like this:
+    
+    |64 | 3 |  7|
+    |5 1| 7 |9  |
+    |   |   | 1 |
+    -------------
+    |  4|9 8| 6 |
+    | 8 |  3| 2 |
+    |   |4  |   |
+    -------------
+    |4  |157| 3 |
+    |2 8|3  | 4 |
+    |75 |   | 96|
+    '''
+    lines = data.split('\n')
+    lines = [l.strip() for l in lines if len(l.strip())>0]
+    lines = [l for l in lines if l.count('-')==0]
+    
+#    for l in lines:
+#        print("L:[%s]" % l)
+        
+    c_indexes = [1,2,3, 5,6,7, 9,10,11]
+
+    grid = Grid()    
+        
+    for r,line in enumerate(lines):
+#        print(line)
+        for c,i in enumerate(c_indexes):
+            try:
+#                print("%i%i: %s" % (r,c,line[i]))
+                grid.set_value(r, c, int(line[i]))        
+            except:
+                pass
+        
+    return grid
+

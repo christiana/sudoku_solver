@@ -55,6 +55,6 @@ def solve_pretty(grid):
     print_end_state(grid)
 
 if __name__ == "__main__":    
-    grid = boards.generate_board_hard_1()    
+    grid = boards.generate_board_expert_2()    
     solve_pretty(grid)
 
